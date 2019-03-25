@@ -41,8 +41,7 @@ import numpy as np
 import tensorflow as tf
 
 import sys
-print(os.path.join(os.getcwd()))
-sys.path.append(os.path.join(os.getcwd(),'agents/rainbow_models/'))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import third_party.dopamine.sum_tree
 
 # This constant determines how many iterations a checkpoint is kept for.
