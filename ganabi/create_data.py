@@ -7,7 +7,7 @@ from agents.rainbow_agent_rl import RainbowAgent
 from agents.simple_agent import SimpleAgent
 
 AGENT_CLASSES = {'SimpleAgent': SimpleAgent, 'RainbowAgent': RainbowAgent}
-NUM_GAMES = 10
+NUM_GAMES = 1000
 NUM_PLAYERS = 2
 DATA_PATH = "./data/discriminator_test.pkl"
 
@@ -55,11 +55,9 @@ for _ in range(NUM_GAMES):
       else:
         assert rainbow_action is None
       
-      #import time; time.sleep(.100)
-      print('Agent: {} action: {}'.format(observation['current_player'], current_player_action))
+      #print('Agent: {} action: {}'.format(observation['current_player'], current_player_action))
       observations, _, game_done, _ = environment.step(current_player_action)
       if game_done:
         break
 
-import pdb; pdb.set_trace()
 pickle.dump(gameplay_data, open(DATA_PATH, "wb"))

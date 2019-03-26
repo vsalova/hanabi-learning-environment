@@ -6,9 +6,9 @@ random.seed(1)
 
 BATCH_SIZE = 255
 DATA_PATH = "./data/discriminator_test.pkl"
-DISPLAY_EVERY = 10
-LEARNING_RATE =.0001
-NUM_STEPS = 10
+DISPLAY_EVERY = 100
+LEARNING_RATE =.001
+NUM_STEPS = 100000
 class DataReader:
   """Assemble and return a batch of data and labels.
   
@@ -84,7 +84,8 @@ def main():
     
     loss = tf.losses.softmax_cross_entropy(logits=logits, onehot_labels=labels)
     optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(loss)
-    accuracy = tf.reduce_sum(tf.cast(tf.equal(tf.argmax(labels,1), tf.argmax(logits,1)), tf.int32)) / BATCH_SIZE
+    
+    accuracy = tf.divide(tf.reduce_sum(tf.cast(tf.equal(tf.argmax(labels,1), tf.argmax(logits,1)), tf.int32)), BATCH_SIZE)
     
   # running session
   with tf.Session(graph=graph) as sess:
@@ -92,13 +93,12 @@ def main():
     tf.local_variables_initializer().run()
     for step in range(NUM_STEPS):
       train_data, train_labels = data_reader.next_batch(train=True)
-      import pdb; pdb.set_trace()
       loss_val, train_acc_val, _ = sess.run([loss, accuracy, optimizer], feed_dict={data:train_data, labels_ph:train_labels})
       
       if step % DISPLAY_EVERY == 0:
         test_data, test_labels = data_reader.next_batch(train=False)
         test_acc_val = sess.run([accuracy], feed_dict={data:test_data, labels_ph:test_labels})
-        print('step {:4d}:    loss={:7.3f}    tr_acc={:.3f}    ts_acc={:.3f}'.format(step, loss_val, train_acc_val, test_acc_val))
+        print('step {:4d}:    loss={:7.3f}    tr_acc={:.3f}    ts_acc={:.3f}'.format(step, loss_val, train_acc_val, test_acc_val[0]))
       
 if __name__ == "__main__":
   main()
